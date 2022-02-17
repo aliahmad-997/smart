@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615885688131",
+    "project_id": "smartidentiy-d088f",
+    "storage_bucket": "smartidentiy-d088f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615885688131:android:89f44c51dbabe2f69ab3f6",
+        "android_client_info": {
+          "package_name": "com.smartidentitytool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615885688131-la7s1rfc22fak9jr5vh3n4b2o5rpu9la.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW0TobVkk1Lp5YDpgtgs7MJmMr5Qsq0_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615885688131-la7s1rfc22fak9jr5vh3n4b2o5rpu9la.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
