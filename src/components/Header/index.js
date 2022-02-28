@@ -21,6 +21,7 @@ const Header = ({back, title}) => {
         <View style={styles.innerContainer}>
           <MenuIcon name="menu" size={24} color={colors.white} />
           <Text style={styles.txt}>{title}</Text>
+          <View style={{flex: 0.1}} />
         </View>
       </View>
       {back && (

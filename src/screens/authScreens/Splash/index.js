@@ -8,16 +8,6 @@ import {images} from '../../../utils';
 const Splash = () => {
   let navigation = useNavigation();
 
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      navigation.replace('Login');
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, []);
-
   return (
     <ImageBackground source={images.splash} style={styles.container}>
       <View style={styles.card}>

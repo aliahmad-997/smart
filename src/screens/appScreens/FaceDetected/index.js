@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 
 import styles from './styles';
 import {Header, Loader, Logout} from '../../../components';
@@ -9,13 +9,16 @@ import {Header, Loader, Logout} from '../../../components';
 const FaceDetected = ({route}) => {
   let navigation = useNavigation();
 
+  let isFocused = useIsFocused();
+
   const [loading, setLoading] = useState(false);
+  const [docId, setDocId] = useState([]);
   const [docs, setDocs] = useState();
   const {base64String, url} = route.params;
 
   useEffect(() => {
     handleReadUserData();
-  }, []);
+  }, [isFocused]);
 
   const handleReadUserData = async () => {
     setLoading(true);
@@ -28,6 +31,7 @@ const FaceDetected = ({route}) => {
           url: url,
         });
       }
+
       setDocs(result.docs);
       setLoading(false);
     } catch (error) {
@@ -56,6 +60,7 @@ const FaceDetected = ({route}) => {
         );
         const responseJson = await response.json();
         if (responseJson.confidence > 0.8) {
+          docId.push(docs[i].id);
           return docs[i].data();
         }
       } catch (error) {
@@ -70,7 +75,12 @@ const FaceDetected = ({route}) => {
     const response = await handleCompareImages();
     setLoading(false);
     if (response) {
-      navigation.navigate('Detail', {data: response});
+      navigation.navigate('Detail', {
+        data: response,
+        base64String: base64String,
+        url: url,
+        id: docId[0],
+      });
     } else {
       navigation.navigate('FaceNotDetected', {
         base64String: base64String,

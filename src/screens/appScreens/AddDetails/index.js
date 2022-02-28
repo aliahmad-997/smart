@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
-import {Header} from '../../../components';
+import {Header, Loader} from '../../../components';
 import {colors} from '../../../utils';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -23,10 +23,24 @@ const AddDetails = ({route}) => {
   const [nationality, setNationality] = useState('');
   const [departure, setDeparture] = useState('');
   const [arrival, setArrival] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const {base64String, url} = route.params;
+  const {base64String, url, screen, id, data} = route.params;
 
   let navigation = useNavigation();
+
+  useEffect(() => {
+    if (data) {
+      setVisaStatus(data.visaStatus);
+      setName(data.name);
+      setIdNo(data.idNo);
+      setPassport(data.passport);
+      setAge(data.age);
+      setNationality(data.nationality);
+      setDeparture(data.departure);
+      setArrival(data.arrival);
+    }
+  }, []);
 
   const handleClear = () => {
     setVisaStatus('');
@@ -41,6 +55,7 @@ const AddDetails = ({route}) => {
 
   const uploadImage = async () => {
     try {
+      setLoading(true);
       const ref = storage().ref(`/${url}`);
       const upload = await ref.putFile(url);
       const downloadUrl = await storage().ref(url).getDownloadURL();
@@ -62,11 +77,41 @@ const AddDetails = ({route}) => {
           downloadUrl: downloadUrl,
         })
         .then(() => {
+          setLoading(false);
           alert('Data Added successfully');
           handleClear();
           navigation.navigate('Added');
         });
     } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const update = async () => {
+    try {
+      setLoading(true);
+      const update = await firestore()
+        .collection('userData')
+        .doc(id)
+        .update({
+          visaStatus: visaStatus,
+          name: name,
+          passport: passport,
+          age: age,
+          nationality: nationality,
+          departure: departure,
+          arrival: arrival,
+          blocled: false,
+          criminalRecord: false,
+          base64String: base64String,
+        })
+        .then(() => {
+          setLoading(false);
+          alert('Successfully Updated');
+        });
+    } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -142,11 +187,20 @@ const AddDetails = ({route}) => {
               alignSelf: 'center',
               marginVertical: 10,
             }}>
-            <TouchableOpacity
-              style={styles.btnContainer}
-              onPress={() => uploadImage()}>
-              <Text style={styles.btnTxt}>{`Add & Pass`}</Text>
-            </TouchableOpacity>
+            {screen === 'Detail' ? (
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={() => update()}>
+                <Text style={styles.btnTxt}>Update</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.btnContainer}
+                onPress={() => uploadImage()}>
+                <Text style={styles.btnTxt}>{`Add & Pass`}</Text>
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity onPress={() => handleClear()}>
               <Text style={styles.btnTxt}>Clear All</Text>
             </TouchableOpacity>
@@ -156,6 +210,7 @@ const AddDetails = ({route}) => {
           <Text style={styles.btnTxt}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
+      {loading && <Loader />}
     </View>
   );
 };

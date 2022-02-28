@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 15,
     justifyContent: 'space-between',
-    width: '60%',
   },
   txt: {
     fontSize: 18,
